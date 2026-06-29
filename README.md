@@ -396,3 +396,28 @@ The script above will take a few minutes to create VMSS and related resources. O
 
 * [License](./LICENSE.md)
       THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+
+
+
+
+ az vmss run-command invoke \
+  --resource-group acdnd-c4-project \
+  --name udacity-vmss \
+  --instance-id 0 \
+  --command-id RunShellScript \
+  --scripts "
+cd /home/udacityadmin/votingapp/azure-vote
+
+export APPLICATIONINSIGHTS_CONNECTION_STRING="InstrumentationKey=11630375-f7e5-41fd-a228-6fc1498d04ca;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=0ea2b8b4-e5ca-42a7-b6cd-1791831c09e8"
+
+nohup python3 main.py > app.log 2>&1 &
+
+sleep 10
+
+cat app.log
+
+ps -ef | grep python3
+"

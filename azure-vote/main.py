@@ -16,7 +16,7 @@ from opencensus.ext.flask.flask_middleware import FlaskMiddleware
 from opencensus.ext.azure.trace_exporter import AzureExporter
 
 
-connection_string = os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING")
+connection_string = os.environ.get('APPLICATIONINSIGHTS_CONNECTION_STRING') or "InstrumentationKey=11630375-f7e5-41fd-a228-6fc1498d04ca;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=0ea2b8b4-e5ca-42a7-b6cd-1791831c09e8"
 # Logging
 # Logging
 logger = logging.getLogger(__name__)

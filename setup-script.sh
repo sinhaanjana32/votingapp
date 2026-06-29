@@ -51,7 +51,16 @@ az network nsg create \
 
 echo "Network security group created: $nsgName"
 
-# Create VM Scale Set
+echo "STEP 3.1 - Creating load balancer $lbName"
+
+az network lb create \
+  --resource-group $resourceGroup \
+  --name $lbName \
+  --sku Standard \
+  --backend-pool-name $bePoolName \
+  --frontend-ip-name loadBalancerFrontEnd \
+  --public-ip-address "${lbName}-pip" \
+  --verbose
 echo "STEP 3 - Creating VM scale set $vmssName"
 
 az vmss create \
@@ -65,8 +74,8 @@ az vmss create \
   --generate-ssh-keys \
   --custom-data cloud-init.txt \
   --upgrade-policy-mode automatic \
-  --lb "" \
-  --public-ip-address "" \
+  --load-balancer $lbName \
+  --public-ip-address "${lbName}-pip" \
   --verbose
 
 echo "VM scale set created: $vmssName"
@@ -76,27 +85,12 @@ vnetNameAuto="${vmssName}VNET"
 subnetNameAuto="${vmssName}Subnet"
 
 # Create Load Balancer
-echo "STEP 3.1 - Creating load balancer $lbName"
 
-az network lb create \
-  --resource-group $resourceGroup \
-  --name $lbName \
-  --sku Standard \
-  --backend-pool-name $bePoolName \
-  --frontend-ip-name loadBalancerFrontEnd \
-  --public-ip-address "${lbName}-pip" \
-  --verbose
 
 echo "Load balancer created: $lbName"
 
 # Add VMSS to Load Balancer Backend Pool
-echo "STEP 3.2 - Adding VMSS to load balancer backend pool"
 
-az vmss update \
-  --resource-group $resourceGroup \
-  --name $vmssName \
-  --add virtualMachineProfile.networkProfile.networkInterfaceConfigurations[0].ipConfigurations[0].loadBalancerBackendAddressPools "{\"id\": \"/subscriptions/$(az account show --query id -o tsv)/resourceGroups/$resourceGroup/providers/Microsoft.Network/loadBalancers/$lbName/backendAddressPools/$bePoolName\"}" \
-  --verbose
 
 echo "VMSS added to load balancer backend pool"
 

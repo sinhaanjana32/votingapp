@@ -403,7 +403,7 @@ The script above will take a few minutes to create VMSS and related resources. O
 
 
 
- az vmss run-command invoke \
+az vmss run-command invoke \
   --resource-group acdnd-c4-project \
   --name udacity-vmss \
   --instance-id 0 \
@@ -421,3 +421,6 @@ cat app.log
 
 ps -ef | grep python3
 "
+
+
+az vmss run-command invoke --resource-group acdnd-c4-project --name udacity-vmss --instance-id 0 --command-id RunShellScript --scripts 'cd /home/udacityadmin/votingapp/azure-vote && export APPLICATIONINSIGHTS_CONNECTION_STRING="InstrumentationKey=11630375-f7e5-41fd-a228-6fc1498d04ca;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=0ea2b8b4-e5ca-42a7-b6cd-1791831c09e8" && python3 main.py'
